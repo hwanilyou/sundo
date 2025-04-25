@@ -1,0 +1,15 @@
+package egovframework.example.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+public class MapController {
+
+    @RequestMapping("/example/map.do")
+    public String mapPage(Model model) {
+        return "egovframework/example/map";  
+        // /WEB-INF/jsp/egovframework/example/map.jsp 를 의미!
+    }
+}
