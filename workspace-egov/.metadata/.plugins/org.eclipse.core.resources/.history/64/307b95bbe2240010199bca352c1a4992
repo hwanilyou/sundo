@@ -1,0 +1,49 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>환경물관리 지도</title>
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- OpenLayers -->
+    <script src="https://cdn.jsdelivr.net/npm/ol@latest/dist/ol.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@latest/ol.css">
+    <style>
+        #map { width: 100%; height: 600px; border: 1px solid #ccc; margin-top: 20px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 class="my-4 text-center">환경물관리 통합 지도</h1>
+    <div class="card">
+        <div class="card-body">
+            <div id="map"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const map = new ol.Map({
+        target: 'map',
+        layers: [
+            new ol.layer.Tile({
+                source: new ol.source.TileWMS({
+                    url: 'http://localhost:8282/geoserver/sundo3/wms',
+                    params: {
+                        'LAYERS': 'sundo3:water_data',
+                        'TILED': true
+                    },
+                    serverType: 'geoserver'
+                })
+            })
+        ],
+        view: new ol.View({
+            center: ol.proj.fromLonLat([127.7669, 35.9078]),
+            zoom: 7
+        })
+    });
+</script>
+</body>
+</html>
