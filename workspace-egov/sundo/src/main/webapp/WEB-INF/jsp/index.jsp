@@ -61,84 +61,67 @@
             text-decoration: underline;
         }
         .ol-zoom {
-	      top: 10px;
-	      right: 10px;
-	      left: auto !important;
-		}
+         top: 10px;
+         right: 10px;
+         left: auto !important;
+      }
         .map-container {
             position: relative;
             width: 100%;
-            height: calc(100vh - 110px);
+            height: calc(100vh - 107px);
             overflow: hidden;
         }
         #map {
             width: 100%;
             height: 100%;
         }
-	  .layer-panel-full {
-		    position: absolute;
-		    top: 110px; /* 상단 nav-bar 높이 이후 */
-		    left: 0;
-		    bottom: 0;
-		    width: 300px;
-		    background: white;
-		    border-right: 1px solid #ddd;
-		    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-		    z-index: 1000;
-		    font-family: sans-serif;
-		    display: flex;
-		    flex-direction: column;
-		  }
+     .layer-panel-full {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 260px;
+          height: 100%;
+          background: #f9f9f9;
+          border-right: 1px solid #ccc;
+          box-shadow: 2px 0 6px rgba(0, 0, 0, 0.1);
+          z-index: 1000;
+          display: flex;
+          flex-direction: column;
+          font-family: 'Noto Sans KR', sans-serif;
+      }
+      
+      .layer-group {
+          flex: 1;
+          overflow-y: auto;
+          padding: 20px;
+          background: #f9f9f9;
+      }
+      
+      .group-item {
+          padding: 10px 15px;
+          background: #e3f2fd;
+          color: #0d47a1;
+          font-weight: bold;
+          border-radius: 6px;
+          margin-bottom: 5px;
+          cursor: pointer;
+          transition: background 0.2s;
+      }
+      
+      .group-item:hover {
+          background: #bbdefb;
+      }
 
-  .tabs {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #f0f0f0;
-    padding: 10px;
-    font-weight: bold;
-  }
-
-  .tab {
-    cursor: pointer;
-    padding: 5px 10px;
-  }
-
-  .tab.active {
-    color: #1E88E5;
-    border-bottom: 2px solid #1E88E5;
-  }
-
-  .close-btn {
-    background: none;
-    border: none;
-    font-size: 20px;
-    cursor: pointer;
-  }
-
-  .group-title {
-    background: #1976D2;
-    color: white;
-    padding: 8px 12px;
-    font-weight: bold;
-    font-size: 14px;
-  }
-
-  .group-item {
-    padding: 8px 12px;
-    border-bottom: 1px solid #eee;
-    cursor: pointer;
-  }
-
-  .group-item:hover {
-    background: #f5f5f5;
-  }
-
-  .layer-list {
-    display: none;
-    padding: 0 12px 10px 12px;
-    background: #fafafa;
-  }
+      .layer-list {
+          display: none;
+          flex-direction: column !important;
+          align-items: flex-start;
+          gap: 6px;
+      }
+      .layer-list label {
+          display: block !important;
+          width: 100%;
+      }
 
   .layer-entry {
     padding: 6px 0;
@@ -173,36 +156,42 @@
         }
         
        
-		.tooltip-measure {
-		    position: absolute;
-		    background: rgba(0, 0, 0, 0.7);
-		    color: white;
-		    padding: 4px 8px;
-		    border-radius: 4px;
-		    font-size: 12px;
-		    white-space: nowrap;
-		    border: 1px solid white;
-		}
+      .tooltip-measure {
+          position: absolute;
+          background: rgba(0, 0, 0, 0.7);
+          color: white;
+          padding: 4px 8px;
+          border-radius: 4px;
+          font-size: 12px;
+          white-space: nowrap;
+          border: 1px solid white;
+      }
 
-		.ol-overviewmap {
-		  bottom: 10px;
-		  right: 10px;
-		  top: auto;
-		  left: auto;
-		}
-		
-		.ol-scale-line {
-		  position: absolute !important;
-		  bottom: 10px !important;
-		  right: 160px !important; /* 인덱스맵 크기에 따라 조절 */
-		  left: auto !important;
-		  background-color: rgba(255, 255, 255, 0.8);
-		  padding: 4px 8px;
-		  border-radius: 4px;
-		  font-size: 12px;
-		  border: 1px solid #ccc;
-		  z-index: 1001;
-		}
+      .ol-overviewmap {
+          position: absolute !important;
+          bottom: 10px !important;
+          right: 10px !important;
+          left: auto !important;
+          top: auto !important;
+          display: block !important;
+          width: 150px !important;
+          height: 150px !important;
+          background: white;
+          z-index: 1100 !important;
+      }
+      
+      .ol-scale-line {
+          position: absolute !important;
+          right: 170px !important;
+          bottom: 10px !important;
+          left: auto !important;
+          z-index: 1100 !important;
+          background-color: rgba(255,255,255,0.8) !important;
+          padding: 4px 8px !important;
+          border: 1px solid #ccc !important;
+          border-radius: 4px !important;
+      }
+      
     </style>
 </head>
 <body>
@@ -210,11 +199,6 @@
 <!-- 상단 헤더 -->
 <div class="top-header">
     <h2>환경물관리 통합정보 플랫폼</h2>
-    <div>
-        <a href="/about.do">시스템 소개</a>
-        <a href="/notice.do">공지사항</a>
-        <a href="/login.do">로그인</a>
-    </div>
 </div>
 
 <!-- 중앙 메뉴 -->
@@ -231,16 +215,15 @@
     <!-- 좌측 레이어 패널 (탭 및 그룹 박스) -->
 <div class="layer-panel-full">
   <div class="layer-group">
-    <div class="group-title">EIASS구축</div>
 
     <div class="group-item" onclick="toggleLayerList('group1')">
-      지도 선택 <span class="toggle-icon">▼</span>
-    </div>
-    <div class="layer-list" id="group1">
-      <label><input type="radio" name="basemap" value="osm" checked> 기본 지도</label>
-      <label><input type="radio" name="basemap" value="landcover"> 토지피복도</label>
-      <label><input type="radio" name="basemap" value="eco"> 생태자연도</label>
-    </div>
+     지도 선택 <span class="toggle-icon">▼</span>
+   </div>
+   <div class="layer-list" id="group1">
+     <label><input type="radio" name="basemap" value="none" checked> 없음</label>
+     <label><input type="radio" name="basemap" value="landcover"> 토지피복도</label>
+     <label><input type="radio" name="basemap" value="eco"> 생태자연도</label>
+   </div>
 
     <div class="group-item" onclick="toggleLayerList('group2')">
       표시 데이터 선택 <span class="toggle-icon">▼</span>
@@ -251,15 +234,22 @@
     </div>
 </div>
 </div>
+
+<!-- 범례 -->
+<div id="legendBox" style="display:none; position:absolute; bottom:170px; right:10px; z-index:1100; background:white; border:1px solid #ccc; padding:10px;">
+    <img id="legendImage" src="" alt="범례 이미지" style="max-width: 200px;">
+</div>
+
+<!-- 측정 -->
+<div style="position:absolute; top:130px; right:10px; z-index:1100; padding:10px;">
+    <button id="measure-distance" class="btn btn-sm btn-outline-primary mb-1">거리 측정</button><br>
+    <button id="measure-area" class="btn btn-sm btn-outline-success">면적 측정</button>
+</div>
     
 </div>
 
 <!-- 지도 스크립트 -->
 <script>
-function toggleCollapse(id) {
-    const el = document.getElementById(id);
-    el.style.display = (el.style.display === 'none') ? 'block' : 'none';
-}
 
 function showLegend(layerName) {
     const legendBox = document.getElementById('legendBox');
@@ -278,19 +268,31 @@ const osmLayer = new ol.layer.Tile({
 });
 const landcoverLayer = new ol.layer.Tile({
     source: new ol.source.TileWMS({
-        url: 'http://localhost:8282/geoserver/sundo3/wms',
-        params: { 'LAYERS': 'sundo3:landcover_layer', 'TILED': true },
-        serverType: 'geoserver'
+        url: 'https://egisapp.me.go.kr/geoserver/gwc/service/wms?',
+        params: {
+            'LAYERS': 'EGIS:lv3_2024y',
+            'TILED': true,
+            'SRS': 'EPSG:3857'
+        },
+        serverType: 'geoserver',
+        transition: 0
     }),
     visible: false
 });
+
 const ecoLayer = new ol.layer.Tile({
     source: new ol.source.TileWMS({
-        url: 'http://localhost:8282/geoserver/sundo3/wms',
-        params: { 'LAYERS': 'sundo3:eco_layer', 'TILED': true },
-        serverType: 'geoserver'
-    }),
-    visible: false
+       url: 'http://egisapp.me.go.kr/geoserver/gwc/service/wms?',
+        params: {
+          'LAYERS': 'EGIS:eco_2015_g',
+          'TILED': true,
+          'SRS': 'EPSG:3857'
+        },
+        serverType: 'geoserver',
+        transition: 0
+      }),
+      visible: false
+
 });
 
 // 데이터 레이어 (수질만)
@@ -326,10 +328,12 @@ const map = new ol.Map({
 
 // 지도 선택
 document.querySelectorAll('input[name="basemap"]').forEach(function(radio) {
-    radio.addEventListener('change', function() {
-        osmLayer.setVisible(this.value === 'osm');
-        landcoverLayer.setVisible(this.value === 'landcover');
-        ecoLayer.setVisible(this.value === 'eco');
+    radio.addEventListener('change', function () {
+        const value = this.value;
+        landcoverLayer.setVisible(value === 'landcover');
+        ecoLayer.setVisible(value === 'eco');
+        // OSM 기본 지도는 항상 보이게 유지
+        osmLayer.setVisible(true);
     });
 });
 
@@ -383,42 +387,36 @@ function createTooltip() {
 
 //거리/면적 측정 시작
 function addInteraction(type) {
-    draw = new ol.interaction.Draw({
-        source: source,
-        type: type
-    });
-    map.addInteraction(draw);
-    createTooltip();
+        draw = new ol.interaction.Draw({ source: source, type: type });
+        map.addInteraction(draw);
+        createTooltip();
 
-    let sketch;
-    const wgs84Sphere = new ol.Sphere(6378137);
+        const wgs84Sphere = new ol.Sphere(6378137);
 
-    draw.on('drawstart', function (evt) {
-        sketch = evt.feature;
-
-        sketch.getGeometry().on('change', function (e) {
-            const geom = e.target;
-            let output;
-            if (geom instanceof ol.geom.Polygon) {
-                const coords = geom.getLinearRing(0).getCoordinates();
-                const area = wgs84Sphere.geodesicArea(coords.map(c => ol.proj.toLonLat(c)));
-                output = (area / 1000000).toFixed(2) + ' km²';
-            } else if (geom instanceof ol.geom.LineString) {
-                const coords = geom.getCoordinates();
-                let length = 0;
-                for (let i = 0; i < coords.length - 1; i++) {
-                    const c1 = ol.proj.toLonLat(coords[i]);
-                    const c2 = ol.proj.toLonLat(coords[i + 1]);
-                    length += wgs84Sphere.haversineDistance(c1, c2);
+        draw.on('drawstart', function (evt) {
+            const sketch = evt.feature;
+            sketch.getGeometry().on('change', function (e) {
+                const geom = e.target;
+                let output;
+                if (geom instanceof ol.geom.Polygon) {
+                    const coords = geom.getLinearRing(0).getCoordinates();
+                    const area = wgs84Sphere.geodesicArea(coords.map(c => ol.proj.toLonLat(c)));
+                    output = (area / 1000000).toFixed(2) + ' km²';
+                } else if (geom instanceof ol.geom.LineString) {
+                    const coords = geom.getCoordinates();
+                    let length = 0;
+                    for (let i = 0; i < coords.length - 1; i++) {
+                        const c1 = ol.proj.toLonLat(coords[i]);
+                        const c2 = ol.proj.toLonLat(coords[i + 1]);
+                        length += wgs84Sphere.haversineDistance(c1, c2);
+                    }
+                    output = (length / 1000).toFixed(2) + ' km';
                 }
-                output = (length / 1000).toFixed(2) + ' km';
-            }
-
-            tooltipElement.innerHTML = output;
-            tooltipOverlay.setPosition(geom.getLastCoordinate());
+                tooltipElement.innerHTML = output;
+                tooltipOverlay.setPosition(geom.getLastCoordinate());
+            });
         });
-    });
-
+        
     draw.on('drawend', function () {
         // 툴팁 고정
         tooltipElement.className = 'tooltip-measure tooltip-static';
@@ -438,37 +436,54 @@ document.getElementById('measure-area').onclick = () => {
     addInteraction('Polygon');
 };
 
-const overviewMapControl = new ol.control.OverviewMap({
-	  layers: [
-	    new ol.layer.Tile({
-	      source: new ol.source.OSM()
-	    })
-	  ],
-	  collapsed: false,
-	  view: new ol.View({
-		    projection: 'EPSG:3857',
-		    center: ol.proj.fromLonLat([127.7669, 35.9078]),
-		    zoom: 5  // ✅ 이 값을 낮출수록 더 줌인된 상태
-		  })
-	});
-	map.addControl(overviewMapControl);
 
-	const scaleLineControl = new ol.control.ScaleLine({
-		  units: 'metric', // 또는 'degrees', 'imperial'
-		  bar: true,       // 막대 형태
-		  text: true,
-		  minWidth: 120
-		});
-		map.addControl(scaleLineControl);
-		
-		function toggleLayerList(id) {
-		    const list = document.getElementById(id);
-		    if (list.style.display === 'block') {
-		      list.style.display = 'none';
-		    } else {
-		      list.style.display = 'block';
-		    }
-		  }
+function toggleLayerList(id) {
+     const list = document.getElementById(id);
+     if (!list) return;
+     const isVisible = list.style.display === 'block';
+     list.style.display = isVisible ? 'none' : 'block';
+   }
+
+const overviewMapControl = new ol.control.OverviewMap({
+    layers: [
+        new ol.layer.Tile({ source: new ol.source.OSM() })
+    ],
+    collapsed: false,
+    minRatio: 4,  // 기본값은 8, 숫자를 줄이면 더 확대됨
+    maxRatio: 16  // 필요시 조절
+
+});
+map.addControl(overviewMapControl);
+
+const scaleLineControl = new ol.control.ScaleLine({
+   units: 'metric', // 또는 'degrees', 'imperial'
+   bar: true,       // 막대 형태
+   text: true,
+   minWidth: 120
+});
+map.addControl(scaleLineControl);
+      
+map.once('postrender', () => {
+     const scaleLine = document.querySelector('.ol-scale-line');
+     const scaleBar = document.querySelector('.ol-scale-bar');
+     
+     if (scaleLine) {
+       scaleLine.style.left = 'auto';
+       scaleLine.style.right = '170px';
+       scaleLine.style.bottom = '10px';
+       scaleLine.style.zIndex = '1100';
+       scaleLine.style.backgroundColor = 'rgba(255,255,255,0.8)';
+       scaleLine.style.padding = '4px 8px';
+       scaleLine.style.border = '1px solid #ccc';
+       scaleLine.style.borderRadius = '4px';
+     }
+     if (scaleBar) {
+           scaleBar.style.left = 'auto';
+           scaleBar.style.right = '170px';
+       }
+   });      
+      
+   
 </script>
 
 </body>

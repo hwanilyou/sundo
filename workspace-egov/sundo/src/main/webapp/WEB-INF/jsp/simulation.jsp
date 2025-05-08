@@ -7,7 +7,10 @@
 <head>
     <meta charset="UTF-8">
     <title>환경물관리 통합정보 플랫폼 - 시뮬레이션</title>
+
+    <!-- Bootstrap & OpenLayers CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@latest/ol.css">
 
     <style>
         .top-header {
@@ -18,19 +21,7 @@
             justify-content: space-between;
             align-items: center;
         }
-        .top-header h2 {
-            margin: 0;
-            font-size: 24px;
-        }
-        .top-header a {
-            color: white;
-            text-decoration: none;
-            margin-left: 15px;
-            font-size: 16px;
-        }
-        .top-header a:hover {
-            text-decoration: underline;
-        }
+        .top-header h2 { margin: 0; font-size: 24px; }
         .menu-bar {
             background-color: #f8f9fa;
             padding: 10px 0;
@@ -46,61 +37,146 @@
             padding-bottom: 5px;
             border-bottom: 3px solid transparent;
         }
-        .menu-bar a.active {
-            border-bottom: 3px solid #1E88E5;
+        .menu-bar a.active { border-bottom: 3px solid #1E88E5; }
+        .menu-bar a:hover { text-decoration: underline; }
+        #mapBefore, #mapAfter {
+            height: 500px;
+            border: 1px solid #ccc;
         }
-        .menu-bar a:hover {
-            text-decoration: underline;
+        .sidebar {
+            padding: 15px;
+            border-right: 1px solid #ddd;
+        }
+        .data-output {
+            margin-top: 20px;
+            font-size: 14px;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            background: #f8f9fa;
         }
     </style>
 </head>
 <body>
-
-<!-- ✅ 상단 헤더 -->
 <div class="top-header">
     <h2>환경물관리 통합정보 플랫폼</h2>
-    <div>
-        <a href="/about.do">시스템 소개</a>
-        <a href="/notice.do">공지사항</a>
-        <a href="/login.do">로그인</a>
-    </div>
 </div>
 
-<!-- ✅ 중앙 메뉴 -->
 <div class="menu-bar">
-    <a href="/" >지도</a>
+    <a href="/">지도</a>
     <a href="/list.do">목록</a>
     <a href="/simulation.do" class="active">시뮬레이션</a>
 </div>
 
-<div class="container mt-5">
-    <!-- 제목 -->
-    <h3 class="text-center mb-4 border-bottom pb-2">시뮬레이션 전·후 비교</h3>
-
-    <!-- 이미지 2개 정렬 -->
-    <div class="row justify-content-center">
-        <!-- 왼쪽: 시뮬레이션 전 -->
-        <div class="col-md-5 text-center mb-4">
-            <h6 class="mb-3">시뮬레이션 전</h6>
-            <img src="${pageContext.request.contextPath}/resources/images/before.jpg"
-                 class="img-fluid rounded shadow border" alt="시뮬레이션 전">
+<div class="container-fluid mt-4">
+    <h4 class="text-center mb-4 border-bottom pb-2">시뮬레이션 전·후 비교</h4>
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-2 sidebar">
+            <input type="file" id="shpInput" multiple class="form-control mb-3" accept=".shp,.dbf">
+            <div class="data-output" id="shpData">
+                <p><strong>속성 정보:</strong></p>
+                <ul id="attributeList">
+                    <li>파일 업로드 시 속성 정보가 존경됩니다.</li>
+                </ul>
+            </div>
+            <button class="btn btn-secondary w-100 mt-3" onclick="resetMap()">초기화</button>
         </div>
 
-        <!-- 오른쪽: 시뮬레이션 후 -->
-        <div class="col-md-5 text-center mb-4">
-            <h6 class="mb-3">시뮬레이션 후</h6>
-            <img src="${pageContext.request.contextPath}/resources/images/after.jpg"
-                 class="img-fluid rounded shadow border" alt="시뮬레이션 후">
+        <!-- Before Map -->
+        <div class="col-md-5">
+            <h6 class="text-center">시뮬레이션 전</h6>
+            <div id="mapBefore"></div>
         </div>
-    </div>
 
-    <!-- 버튼 정렬 -->
-    <div class="text-center mt-4">
-        <button class="btn btn-secondary me-2">초기화</button>
-        <button class="btn btn-primary">시뮬레이션 실행</button>
+        <!-- After Map -->
+        <div class="col-md-5">
+            <h6 class="text-center">시뮬레이션 후</h6>
+            <div id="mapAfter"></div>
+        </div>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ol@latest/dist/ol.js"></script>
+<script src="https://unpkg.com/shapefile@0.6.6/dist/shapefile.js"></script>
+
+<script>
+    const center = ol.proj.fromLonLat([127.7669, 35.9078]);
+
+    const baseLayerBefore = new ol.layer.Tile({ source: new ol.source.OSM() });
+    const baseLayerAfter = new ol.layer.Tile({ source: new ol.source.OSM() });
+
+    const mapBefore = new ol.Map({
+        target: 'mapBefore',
+        layers: [baseLayerBefore],
+        view: new ol.View({ center: center, zoom: 12 })
+    });
+
+    const vectorSource = new ol.source.Vector();
+    const vectorLayer = new ol.layer.Vector({ source: vectorSource });
+
+    const mapAfter = new ol.Map({
+        target: 'mapAfter',
+        layers: [baseLayerAfter, vectorLayer],
+        view: new ol.View({ center: center, zoom: 12 })
+    });
+
+    document.getElementById('shpInput').addEventListener('change', async function (e) {
+        const files = e.target.files;
+        const shpFile = [...files].find(f => f.name.endsWith('.shp'));
+        const dbfFile = [...files].find(f => f.name.endsWith('.dbf'));
+
+        if (!shpFile || !dbfFile) {
+            alert('SHP와 DBF 파일을 모두 선택해야 합니다.');
+            return;
+        }
+
+        try {
+            const shpBuffer = await shpFile.arrayBuffer();
+            const dbfBuffer = await dbfFile.arrayBuffer();
+            vectorSource.clear();
+
+            const sourceIter = await shapefile.open(shpBuffer, dbfBuffer);
+            const attrList = document.getElementById('attributeList');
+            attrList.innerHTML = '';
+
+            const readNext = async () => {
+                const result = await sourceIter.read();
+                if (result.done) return;
+
+                const geojson = result.value;
+                console.log("GeoJSON:", geojson);
+                const feature = new ol.format.GeoJSON().readFeature(geojson, {
+                    featureProjection: 'EPSG:3857'
+                });
+                vectorSource.addFeature(feature);
+
+                const props = geojson.properties || {};
+                if (Object.keys(props).length === 0) {
+                    attrList.innerHTML = '<li>속성 정보 없음</li>';
+                } else {
+                    for (const key in props) {
+                        const li = document.createElement('li');
+                        li.textContent = key + ": " + (props[key] !== undefined ? props[key] : '-');
+                        attrList.appendChild(li);
+                    }
+                }
+                await readNext();
+            };
+            await readNext();
+
+        } catch (err) {
+            console.error("에러:", err);
+            alert("파일 업로드 중 오류가 발생했습니다.");
+        }
+    });
+
+    function resetMap() {
+        vectorSource.clear();
+        document.getElementById('attributeList').innerHTML = '<li>초기화 됩니다.</li>';
+    }
+</script>
 </body>
 </html>
